@@ -1,0 +1,195 @@
+﻿use master;
+go
+--Nếu đã tồn tại database Workshop4 rồi thì xóa đi và tạo mới
+if exists(select * from sys.databases where name='WORKSHOP4')
+drop database WORKSHOP4;
+go
+create database WORKSHOP4;
+go
+use WORKSHOP4;
+go
+create table NHANVIEN(
+	HONV     varchar(15) ,   
+	TENLOT	 varchar(15),
+	TENNV	 varchar(15),
+	MANV     char(9),
+	NGSINH	 date,
+	DCHI	 varchar(50),
+	PHAI	 varchar(3),
+	LUONG    real,
+	MA_NQL   char(9),
+	PHG      int,
+	constraint NHANVIEN_PK	primary key (MaNV),
+	
+);
+create table PHONGBAN(
+	TENPHG   varchar(15),
+	MAPHG    int,
+	TRPHG    char(9),
+	NG_NHANCHUC  date,
+	constraint PHONGBAN_PK primary key (MAPHG),
+	constraint PHONGBAN_FK_NHANVIEN foreign key (TRPHG) references NHANVIEN (MANV)
+);
+create table DIADIEM_PHG(
+	MAPHG int,
+	DIADIEM varchar(15),
+	constraint DIADIEM_PHG_PK primary key (MAPHG, DIADIEM),
+	constraint DIADIEM_PHG_FK_PHONGBAN foreign key (MAPHG) references PHONGBAN (MAPHG)
+);
+create table THANNHAN(
+	MA_NVIEN  char(9),
+	TENTN     varchar(15),
+	PHAI     varchar(3),
+	NGSINH    date,
+	QUANHE    varchar(8),
+	constraint THANNHAN_PK primary key (MA_NVIEN, TenTN),
+	constraint THANNHAN_FK_NHANVIEN foreign key (MA_NVIEN) references NHANVIEN (MANV),
+);
+create table DEAN(
+	TENDA  varchar(50),
+	MADA  int,
+	DDIEM_DA   varchar(50),
+	PHONG  int,
+	constraint DEAN_PK primary key (MADA),
+	
+);
+create table PHANCONG(
+	MA_NVIEN   char(9),
+	SODA     int,
+	THOIGIAN  float,
+	constraint PHANCONG_PK primary key (MA_NVIEN,SODA),
+	constraint PHANCONG_FK_NHANVIEN_1 foreign key (MA_NVIEN) references NHANVIEN (MANV),
+	constraint PHANCONG_FK_NHANVIEN_2 foreign key (SODA) references DEAN (MADA),
+);
+insert into NHANVIEN values('Dinh', 'Ba', 'Tien','123456789','1955-01-09','731 Tran Hung Dao, Q1,TPHCM', 'Nam', 30000,'333445555',5);
+insert into NHANVIEN values('Nguyen', 'Thanh', 'Tung','333445555','1945-12-08',' 638 Nguyen Van Cu, Q5,TPHCM', 'Nam', 40000,'888665555',5);
+insert into NHANVIEN values('Bui', 'Thuy', 'Vu','999887777','1958-7-19','332 Nguyen Thai Hoc, Q1,TPHCM', 'Nam', 25000,'987654321',4);
+insert into NHANVIEN values('Le', 'Thi', 'Nhan','987654321','1931-6-2','291 Ho Van Hue, QPN, TPHCM', 'Nu', 43000,'888665555',4);
+insert into NHANVIEN values('Nguyen', 'Manh', 'Hung','666884444','1952-01-15','975 Ba Ria, Vung Tau', 'Nam', 38000,'333445555',5);
+insert into NHANVIEN values('Tran', 'Thanh', 'Tam','453453453','1962-7-31','543 Mai Thi Luu, Q1,TPHCM', 'Nam', 25000,'333445555',5);
+insert into NHANVIEN values('Tran', 'Hong', 'Quang','987987987','1959-03-21','980 Le Hong Phong, Q10, TPHCM', 'Nam', 25000,'987654321',4);
+insert into NHANVIEN values('Vuong', 'Ngoc', 'Quyen','888665555','1927-10-10','450 Trung Vuong, Ha Noi', 'Nu', 55000,null,1);
+alter table NHANVIEN
+add constraint NHANVIEN_FK foreign key (MA_NQL) references NHANVIEN (MANV);
+insert into PHONGBAN values('Nghien cuu',5,'333445555', '1978-09-12');
+insert into PHONGBAN values('Dieu hanh' ,4, '987987987', '1985-01-01');
+insert into PHONGBAN values('Quan ly', 1, '888665555', '1971-06-19');
+
+ insert into DIADIEM_PHG values(1 ,'TP HCM');
+ insert into DIADIEM_PHG values(4 ,'HA NOI');
+ insert into DIADIEM_PHG values(5 ,'VUNG TAU');
+ insert into DIADIEM_PHG values(5 ,'NHA TRANG');
+ insert into DIADIEM_PHG values(5 ,'TP HCM');
+ --chen du lieu than nhan
+ insert into THANNHAN values('333445555' ,'Quang', 'Nu', '1976-06-09', 'Con gai');
+ insert into THANNHAN values('333445555', 'Khang', 'Nam', '1973-10-25', 'Con trai');
+ insert into THANNHAN values('333445555', 'Duong', 'Nu', '1948-05-03', 'Vo chong');
+ insert into THANNHAN values('987654321', 'Dang', 'Nam' ,'1932-07-08', 'Vo chong');
+ insert into THANNHAN values('123456789', 'Duy', 'Nam', '1978-07-12', 'Con trai');
+ insert into THANNHAN values('123456789', 'Chau', 'Nu', '1978-12-31', 'Con gai');
+ insert into THANNHAN values('123456789', 'Phuong', 'Nu', '1957-05-06', 'Vo chong');
+ insert into DEAN values('San pham X', 1 ,'VUNG TAU', 5);
+ insert into DEAN values('San pham Y', 2 ,'NHA TRANG', 5);
+ insert into DEAN values('San pham Z', 3, 'TP HCM', 5);
+ insert into DEAN values('Tin hoc hoa', 10 ,'HA NOI', 4);
+ insert into DEAN values('Cap quang', 20 ,'TP HCM', 1);
+ insert into DEAN values('Dao tao', 30 ,'HA NOI', 4);
+ insert into PHANCONG values('123456789', 1 ,32.5);
+ insert into PHANCONG values('123456789', 2 ,7.5);
+ insert into PHANCONG values('666884444', 3, 40.0);
+ insert into PHANCONG values('453453453', 1 ,20.0);
+ insert into PHANCONG values('453453453' ,2 ,20.0);
+ insert into PHANCONG values('333445555', 3 ,10.0);
+ insert into PHANCONG values('333445555' ,10 ,10.0);
+ insert into PHANCONG values('333445555', 20 ,10.0);
+ insert into PHANCONG values('999887777' ,30 ,30.0);
+ insert into PHANCONG values('999887777', 10 ,10.0);
+ insert into PHANCONG values('987987987' ,10 ,35.0);
+ insert into PHANCONG values('987987987', 30 ,5.0);
+ insert into PHANCONG values('987654321' ,30 ,20.0);
+ insert into PHANCONG values('987654321', 20, 15.0);
+ insert into PHANCONG values('888665555' ,20 ,null);
+  --CAU 1
+SELECT HONV ,TENLOT ,TENNV ,DCHI FROM NHANVIEN
+WHERE PHG=(SELECT MAPHG FROM PHONGBAN WHERE TENPHG='Nghien cuu');
+--CAU 2
+SELECT distinct MADA,PHONG,TENNV, HONV ,DCHI,NGSINH FROM NHANVIEN INNER JOIN DEAN ON PHG=PHONG
+WHERE DDIEM_DA='HA NOI';
+--CAU 3
+SELECT distinct TENNV, HONV FROM NHANVIEN INNER JOIN DEAN ON PHG=PHONG WHERE PHONG=5;
+--CAU 4
+SELECT MADA FROM NHANVIEN INNER JOIN DEAN ON PHG=PHONG INNER JOIN PHONGBAN ON PHONG=MAPHG
+WHERE HONV='Dinh' or MAPHG=MADA;
+--CAU 5
+SELECT  HONV,TENNV FROM NHANVIEN 
+WHERE(SELECT COUNT(*) FROM THANNHAN WHERE MANV=MA_NVIEN)>=2;
+--CAU 6
+SELECT  HONV,TENNV FROM NHANVIEN 
+WHERE NOT EXISTS (SELECT * FROM THANNHAN WHERE MANV=MA_NVIEN);
+--CAU 7
+SELECT HONV,TENNV FROM NHANVIEN WHERE MANV IN (SELECT TRPHG FROM PHONGBAN WHERE MANV=TRPHG)
+AND  MANV IN (SELECT MA_NVIEN FROM THANNHAN WHERE MANV=MA_NVIEN);
+--CAU 8
+SELECT HONV, TENLOT ,TENNV,TENDA,THOIGIAN FROM NHANVIEN,DEAN,PHANCONG 
+WHERE TENDA='San pham X' AND MADA=SODA AND MANV=PHANCONG.MA_NVIEN AND PHG=5 AND THOIGIAN>10;
+--CAU 9
+SELECT HONV,TENNV FROM NHANVIEN INNER JOIN THANNHAN ON MANV=MA_NVIEN
+WHERE TENNV=TENTN;
+--CAU 10
+SELECT N1.HONV,N1.TENLOT,N1.TENNV,N1.PHG,N2.HONV+''+N2.TENLOT+''+N2.TENNV AS 'HOTENNGUOIQUANLI'
+FROM NHANVIEN N1,DEAN,PHANCONG,NHANVIEN N2
+WHERE DEAN.TENDA='San pham X' and DEAN.MADA=PHANCONG.SODA AND N1.MANV=PHANCONG.MA_NVIEN AND N1.PHG=5 AND
+N1.MA_NQL=N2.MANV AND N2.HONV='Nguyen' AND N2.TENLOT='Thanh' AND N2.TENNV='Tung'
+--CAU 11
+SELECT MADA,SUM(THOIGIAN) AS TONGTG FROM NHANVIEN,DEAN,PHANCONG WHERE MANV=MA_NVIEN AND SODA=MADA
+GROUP BY MADA,TENDA;
+--CAU 12
+SELECT distinct TENNV, HONV FROM NHANVIEN INNER JOIN DEAN ON PHG=PHONG;
+--CAU 13
+SELECT  HONV, TENNV FROM NHANVIEN 
+WHERE NOT EXISTS (SELECT * FROM DEAN WHERE PHG=PHONG);
+--CAU 14
+SELECT TENPHG,AVG(LUONG) AS LUONGTB FROM NHANVIEN,PHONGBAN 
+WHERE PHG=MAPHG GROUP BY TENPHG;
+--CAU 15
+SELECT AVG(LUONG) AS LUONGTB FROM NHANVIEN WHERE PHAI='Nu';
+--CAU 16
+SELECT DISTINCT HONV ,TENLOT,TENNV, DCHI
+FROM NHANVIEN,DEAN,PHONGBAN,PHANCONG,DIADIEM_PHG
+WHERE PHANCONG.MA_NVIEN = NHANVIEN.MANV and PHANCONG.SODA= DEAN.MADA and
+DEAN.PHONG= PHONGBAN.MAPHG  and DDIEM_DA LIKE 'TP HCM'and DIADIEM NOT LIKE 'TP HCM';
+--CAU 17
+SELECT HONV,TENNV
+FROM NHANVIEN,PHONGBAN
+WHERE NOT EXISTS(
+ SELECT *
+ FROM THANNHAN
+ WHERE NHANVIEN.MANV=MA_NVIEN
+) AND MANV=PHONGBAN.TRPHG		
+--CAU 18
+SELECT DISTINCT HONV ,TENLOT,TENNV, DCHI
+FROM NHANVIEN,DEAN,PHONGBAN,PHANCONG,DIADIEM_PHG
+WHERE PHANCONG.MA_NVIEN = NHANVIEN.MANV and PHANCONG.SODA= DEAN.MADA and
+DEAN.PHONG= PHONGBAN.MAPHG  and DDIEM_DA LIKE 'TP HCM'and DIADIEM NOT LIKE 'TP HCM';
+--CAU 19
+SELECT HONV,TENLOT,TENNV
+FROM  NHANVIEN
+WHERE LUONG > (SELECT AVG(LUONG)
+            FROM PHONGBAN PB, NHANVIEN NV
+            WHERE PB.MAPHG=NV.PHG and TENPHG='NGHIEN CUU');
+--CAU 20
+SELECT TENPHG,COUNT(*) AS SOLUONGNHANVIEN,AVG(LUONG) AS LUONGTRUNGBINH FROM NHANVIEN,PHONGBAN
+WHERE PHG=MAPHG GROUP BY TENPHG HAVING AVG(LUONG)>30000;
+--CAU 21
+SELECT HONV,TENNV,TENDA FROM NHANVIEN,DEAN WHERE PHG=PHONG;
+--CAU 22
+SELECT TENPHG, HONV, TENLOT, TENNV
+FROM PHONGBAN PB, NHANVIEN NV
+WHERE NV.MANV=PB.TRPHG and PB.MAPHG IN (SELECT MAPHONG  FROM   (SELECT MAPHG AS MAPHONG, COUNT(MANV)AS 'SO_NHAN_VIEN'
+FROM NHANVIEN NV, PHONGBAN PB
+ WHERE PB.MAPHG=NV.PHG
+ GROUP BY MAPHG
+ HAVING COUNT(MANV)= ( SELECT MAX (SO_NV)  FROM ( SELECT COUNT(MANV)AS SO_NV
+  FROM PHONGBAN PB, NHANVIEN NV
+ WHERE PB.MAPHG=NV.PHG
+ GROUP BY MAPHG)AS SL ))AS A)
